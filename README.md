@@ -1,6 +1,6 @@
 # Audio to text transcription
 
-## Understanding the Code
+## Code Understanding
 
 In the following repo you will find:
 
@@ -10,7 +10,7 @@ In the following repo you will find:
 | Frontend     | Here you can find the user interface.       | [User Interface](https://github.com/candemas97/audio-to-text-transcription/blob/main/frontend/index.html)     |
 | API    | API to connect Backend and Frontend with FastAPI       | [API](https://github.com/candemas97/audio-to-text-transcription/blob/main/app.py)|
 
-You **must** run this repo in [app.py](https://github.com/candemas97/audio-to-text-transcription/blob/main/app.py) file. Here you can find the API that connects the frontend with the backend. 
+You **must** run this repo in the [API](https://github.com/candemas97/audio-to-text-transcription/blob/main/app.py) file.
 
 ## Extra advices
 
