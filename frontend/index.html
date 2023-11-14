@@ -1,0 +1,97 @@
+<html>
+  <head>
+    <title>Live Transcription</title>
+  </head>
+  <style>
+    #italicPart {
+      color: blue;
+    }
+  </style>
+  <body>
+    <h1>
+      Transcribe Audio to Text With FastAPI
+      <br /><span id="italicPart"
+        ><i>(Transcribir Audio en Texto con FastAPI)</i></span
+      >
+    </h1>
+    <h3>
+      In the following app you will se how to transcribe Audio to Text with
+      FastAPI
+      <br />
+      <span id="italicPart"
+        ><i
+          >En la siguiente aplicación se muestra cómo se transcribe audio en
+          Texto con FastAPI</i
+        ></span
+      >
+    </h3>
+    <p id="status">Connection status will go here</p>
+    <p id="transcript"></p>
+    <button id="miBotonEspanol">Transcribir Audio (Español)</button>
+    <button id="miBotonIngles">Transcribe Audio (English)</button>
+
+    <script>
+      function ejecutarAlPresionar(host_segun_idioma) {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+          if (!MediaRecorder.isTypeSupported("audio/webm"))
+            return alert("Browser not supported");
+
+          const mediaRecorder = new MediaRecorder(stream, {
+            mimeType: "audio/webm",
+          });
+
+          const socket = new WebSocket(host_segun_idioma); //ws://localhost:8080/listen-es
+
+          socket.onopen = () => {
+            document.querySelector("#status").textContent = "Connected";
+            console.log({ event: "onopen" });
+            mediaRecorder.addEventListener("dataavailable", async (event) => {
+              if (event.data.size > 0 && socket.readyState == 1) {
+                socket.send(event.data);
+              }
+            });
+            mediaRecorder.start(250);
+          };
+
+          socket.onmessage = (message) => {
+            const received = message.data;
+            if (received) {
+              console.log(received);
+              if (host_segun_idioma === "ws://localhost:8080/listen-es") {
+                document.querySelector("#transcript").innerHTML += //.textContent
+                  " " + received + "<br>";
+              } else if (
+                host_segun_idioma === "ws://localhost:8080/listen-en"
+              ) {
+                document.querySelector("#transcript").innerHTML += //.textContent
+                  " " + received + "<br>";
+              }
+            }
+          };
+
+          socket.onclose = () => {
+            document.querySelector("#transcript").innerHTML += "<br>";
+            console.log({ event: "onclose" });
+          };
+
+          socket.onerror = (error) => {
+            console.log({ event: "onerror", error });
+          };
+        });
+      }
+
+      // Obtener los botones por su ID
+      var botonEsp = document.getElementById("miBotonEspanol");
+      var botonIng = document.getElementById("miBotonIngles");
+
+      // Agregar un evento de clic a cada botón que llame a la función con el parámetro correspondiente
+      botonEsp.addEventListener("click", function () {
+        ejecutarAlPresionar("ws://localhost:8080/listen-es");
+      });
+
+      botonIng.addEventListener("click", function () {
+        ejecutarAlPresionar("ws://localhost:8080/listen-en");
+      });
+    </script>
+  </body>
+</html>
