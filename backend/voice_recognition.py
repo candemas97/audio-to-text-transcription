@@ -25,12 +25,18 @@ def reconocimiento_audio(idioma: str) -> str:
             audio_reconocido = recognizer.recognize_google(audio, language="en-US")
         else:
             audio_reconocido = "Language not recognized in database"
-        print(f"Audio recorded: {audio_reconocido}")
-        return audio_reconocido
+
     except sr.UnknownValueError:
-        print("Audio was not recognized. Try again.")
+        if idioma.lower() == "spanish":
+            audio_reconocido = "Audio no reconocido. Intente de nuevo."
+        elif idioma.lower() == "english":
+            audio_reconocido = "Audio was not recognized. Try again."
+
     except sr.RequestError as e:
-        print(f"Request Error: {e}")
+        audio_reconocido = f"Request Error: {e}"
+
+    finally:
+        return audio_reconocido
 
 
 # Pruebas
